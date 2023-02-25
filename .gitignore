@@ -1,0 +1,8 @@
+# Mac File System
+.DS_Store
+
+# Node Module
+node_modules/
+
+# Terraform file
+.terraform
