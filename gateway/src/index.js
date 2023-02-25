@@ -68,7 +68,7 @@ function setupHandlers(app) {
 
           response.on("end", () => {
             // Renders the video list for display in the browser.
-            getAds(res, "upload-video", {
+            getAds(res, "video-list", {
               videos: JSON.parse(data).videos,
             });
           });
@@ -151,7 +151,7 @@ function setupHandlers(app) {
 
           response.on("end", () => {
             // Renders the history for display in the browser.
-            res.render("history", { videos: JSON.parse(data).videos });
+            getAds(res, "history", { videos: JSON.parse(data).videos });
           });
 
           response.on("error", (err) => {

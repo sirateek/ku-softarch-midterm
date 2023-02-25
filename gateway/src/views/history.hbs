@@ -48,6 +48,18 @@
                     </table>
                 </div>
             </div>
+
+
+            <div class="m-4">
+                <p style="">
+                    <b>Advertising:</b>
+                    {{#if ads}}
+                        <a href="{{ads.link}}" target="_blank">{{ads.name}}</a> 
+                    {{else}}
+                        No ads to display...
+                    {{/if}}
+                </p>
+            </div>
         </div>
     </body>
 </html>
