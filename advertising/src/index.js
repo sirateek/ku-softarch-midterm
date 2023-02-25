@@ -31,6 +31,7 @@ function setupHandlers(app, db) {
   app.get("/getAds", async (req, res) => {
     // Get ads data from db.
     let result;
+    console.log("Getting data from database.");
     try {
       result = await adsCollection.aggregate([
         {
@@ -45,6 +46,7 @@ function setupHandlers(app, db) {
         },
       ]);
     } catch (e) {
+      console.log("Error", e);
       res.sendStatus(500);
     }
 
@@ -53,6 +55,7 @@ function setupHandlers(app, db) {
       responseResult = doc;
       break;
     }
+    console.log("Responding: ", responseResult);
     // Response
     res.json(responseResult);
   });
@@ -69,6 +72,7 @@ function startHttpServer(dbConn) {
     setupHandlers(app, dbConn.db);
 
     const port = (process.env.PORT && parseInt(process.env.PORT)) || 3000;
+    console.log("Starting the server on port", port);
     const server = app.listen(port, () => {
       app.close = () => {
         // Create a function that can be used to close our server and database.
