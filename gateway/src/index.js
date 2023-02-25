@@ -110,7 +110,7 @@ function setupHandlers(app) {
             };
 
             // Renders the video for display in the browser.
-            res.render("play-video", { video });
+            getAds(res, "play-video", { video: video });
           });
 
           response.on("error", (err) => {
