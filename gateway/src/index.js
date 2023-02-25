@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const http = require("http");
+const bodyParser = require("body-parser");
 
 function getAds(res, renderPage, data) {
   http
@@ -193,6 +194,27 @@ function setupHandlers(app) {
       {
         host: `video-upload`,
         path: `/upload`,
+        method: "POST",
+        headers: req.headers,
+      },
+      (forwardResponse) => {
+        res.writeHeader(forwardResponse.statusCode, forwardResponse.headers);
+        forwardResponse.pipe(res);
+      }
+    );
+
+    req.pipe(forwardRequest);
+  });
+
+  //
+  // HTTP POST API to upload video from the user's browser.
+  //
+  app.post("/api/createAds", (req, res) => {
+    const forwardRequest = http.request(
+      // Forward the request to the video streaming microservice.
+      {
+        host: `advertising`,
+        path: `/createAds`,
         method: "POST",
         headers: req.headers,
       },
