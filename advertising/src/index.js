@@ -59,6 +59,24 @@ function setupHandlers(app, db) {
     // Response
     res.json(responseResult);
   });
+
+  app.post("/createAds", async (req, res) => {
+    console.log("Creating the ads");
+
+    if (!req.body.name || !req.body.link) {
+      res.sendStatus(400);
+      return;
+    }
+
+    return adsCollection
+      .insertOne({
+        name: req.body.name,
+        link: req.body.link,
+      })
+      .then(() => {
+        res.sendStatus(200);
+      }); // Record the "view" in the database.
+  });
 }
 
 //
