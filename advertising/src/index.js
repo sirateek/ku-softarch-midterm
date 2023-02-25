@@ -33,6 +33,7 @@ function setupHandlers(app, db) {
     let result;
     console.log("Getting data from database.");
     try {
+      // Get the ads from db by using aggregate command.
       result = await adsCollection.aggregate([
         {
           $sample: {
@@ -46,7 +47,8 @@ function setupHandlers(app, db) {
         },
       ]);
     } catch (e) {
-      console.log("Error", e);
+      // Return internal server error of something happen.
+      console.log("Error getting data from database", e);
       res.sendStatus(500);
     }
 
@@ -60,6 +62,13 @@ function setupHandlers(app, db) {
     res.json(responseResult);
   });
 
+  // Addtional: For creating an ads in the database
+  // Required Body:
+  // {
+  //    "name": "HelloTest",
+  //    "link": "https://google.com"
+  //
+  // }
   app.post("/createAds", async (req, res) => {
     console.log("Create ads request receieved");
 
@@ -129,16 +138,15 @@ function startMicroservice(dbHost, dbName) {
 // Application entry point.
 //
 function main() {
+  // Set the default dbhost if the env doesn't have one.
   if (!process.env.DBHOST) {
     process.env.DBHOST = "mongodb://localhost:27017";
   }
 
   const DBHOST = process.env.DBHOST;
 
+  // Set the default dbname if the env doesn't have one.
   if (!process.env.DBNAME) {
-    // throw new Error(
-    //   "Please specify the databse name using environment variable DBNAME."
-    // );
     process.env.DBNAME = "advertising";
   }
 
