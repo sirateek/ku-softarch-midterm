@@ -2,6 +2,43 @@ const express = require("express");
 const path = require("path");
 const http = require("http");
 
+function getAds(res, renderPage, data) {
+  http
+    .request(
+      {
+        host: `advertising`,
+        path: `/getAds`,
+        method: `GET`,
+      },
+      (response2) => {
+        let data2 = "";
+
+        response2.on("data", (chunk) => {
+          data2 += chunk;
+        });
+
+        response2.on("end", () => {
+          console.log(data2);
+          let adsData = null;
+          if (data2) {
+            adsData = JSON.parse(data2);
+          }
+          res.render(renderPage, {
+            ...data,
+            ads: adsData,
+          });
+        });
+
+        response2.on("error", (err) => {
+          console.error("Failed to get video list.");
+          console.error(err || `Status code: ${response.statusCode}`);
+          res.sendStatus(500);
+        });
+      }
+    )
+    .end();
+}
+
 //
 // Setup event handlers.
 //
@@ -31,40 +68,9 @@ function setupHandlers(app) {
 
           response.on("end", () => {
             // Renders the video list for display in the browser.
-            http
-              .request(
-                {
-                  host: `advertising`,
-                  path: `/getAds`,
-                  method: `GET`,
-                },
-                (response2) => {
-                  let data2 = "";
-
-                  response2.on("data", (chunk) => {
-                    data2 += chunk;
-                  });
-
-                  response2.on("end", () => {
-                    console.log(data2);
-                    let adsData = null;
-                    if (data2) {
-                      adsData = JSON.parse(data2);
-                    }
-                    res.render("video-list", {
-                      videos: JSON.parse(data).videos,
-                      ads: adsData,
-                    });
-                  });
-
-                  response2.on("error", (err) => {
-                    console.error("Failed to get video list.");
-                    console.error(err || `Status code: ${response.statusCode}`);
-                    res.sendStatus(500);
-                  });
-                }
-              )
-              .end();
+            getAds(res, "upload-video", {
+              videos: JSON.parse(data).videos,
+            });
           });
 
           response.on("error", (err) => {
@@ -121,7 +127,8 @@ function setupHandlers(app) {
   // Web page to upload a new video.
   //
   app.get("/upload", (req, res) => {
-    res.render("upload-video", {});
+    // Renders the video list for display in the browser.
+    getAds(res, "upload-video", {});
   });
 
   //
