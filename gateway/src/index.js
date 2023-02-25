@@ -31,7 +31,40 @@ function setupHandlers(app) {
 
           response.on("end", () => {
             // Renders the video list for display in the browser.
-            res.render("video-list", { videos: JSON.parse(data).videos });
+            http
+              .request(
+                {
+                  host: `advertising`,
+                  path: `/getAds`,
+                  method: `GET`,
+                },
+                (response2) => {
+                  let data2 = "";
+
+                  response2.on("data", (chunk) => {
+                    data2 += chunk;
+                  });
+
+                  response2.on("end", () => {
+                    console.log(data2);
+                    let adsData = null;
+                    if (data2) {
+                      adsData = JSON.parse(data2);
+                    }
+                    res.render("video-list", {
+                      videos: JSON.parse(data).videos,
+                      ads: adsData,
+                    });
+                  });
+
+                  response2.on("error", (err) => {
+                    console.error("Failed to get video list.");
+                    console.error(err || `Status code: ${response.statusCode}`);
+                    res.sendStatus(500);
+                  });
+                }
+              )
+              .end();
           });
 
           response.on("error", (err) => {
