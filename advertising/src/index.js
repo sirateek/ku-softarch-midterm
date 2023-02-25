@@ -61,9 +61,10 @@ function setupHandlers(app, db) {
   });
 
   app.post("/createAds", async (req, res) => {
-    console.log("Creating the ads");
+    console.log("Create ads request receieved");
 
     if (!req.body.name || !req.body.link) {
+      console.log("Validation body failed");
       res.sendStatus(400);
       return;
     }
@@ -74,8 +75,13 @@ function setupHandlers(app, db) {
         link: req.body.link,
       })
       .then(() => {
+        console.log("Successfully to create ads");
         res.sendStatus(200);
-      }); // Record the "view" in the database.
+      })
+      .catch((e) => {
+        console.log(e);
+        res.sendStatus(500);
+      });
   });
 }
 
