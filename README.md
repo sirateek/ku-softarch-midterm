@@ -8,6 +8,8 @@ By using the docker compose
 $ docker compose up -d --build
 ```
 
+And load the db fixture by going to http://localhost:9000/load-fixture?db=advertising&fix=advertising
+
 ## System diagram
 
 ![SoftArch Midterm](https://user-images.githubusercontent.com/25188615/221345495-8fcf951d-eb9b-433f-bd54-4ad11dbda3a2.jpg)
